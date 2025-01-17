@@ -1,6 +1,7 @@
 local name, WoWVideoPlayer = ...
 
 local Main = LibStub("AceAddon-3.0"):NewAddon(name)
+local AceGUI = LibStub("AceGUI-3.0")
 
 WoWVideoPlayer.Main = Main
 
@@ -22,6 +23,7 @@ function Main:InitializeVideos()
             name = videoConfig.name,
             width = videoConfig.width or 1080, -- Default to 1080 if not specified
             height = videoConfig.height or 1080, -- Default to 1080 if not specified
+            fps = videoConfig.fps or 5, -- Default to 5 if not specified
             frames = {}
         }
 
@@ -39,8 +41,10 @@ function Main:InitializeVideos()
 
             -- Stop when no more frames are found
             --if not FileExists(framePath) then
-                --break
-            --end
+            --if frameIndex > videoConfig.frameCount then
+            if frameIndex > 200 then
+                break
+            end
 
             -- Add the frame to the video
             table.insert(videoData.frames, framePath)
@@ -121,8 +125,12 @@ function Main:CreateVideoWindow()
     local textureFrame = CreateFrame("Frame", nil, videoWindow.frame)
     local videoTexture = textureFrame:CreateTexture(nil, "ARTWORK")
 
+    -- Adjust the size of the textureFrame to be slightly smaller than the videoWindow
+    local padding = 10 -- Adjust the padding value as needed for desired border visibility
+    textureFrame:SetPoint("TOPLEFT", videoWindow.frame, "TOPLEFT", padding, -padding)
+    textureFrame:SetPoint("BOTTOMRIGHT", videoWindow.frame, "BOTTOMRIGHT", -padding, padding)
+
     videoTexture:SetAllPoints(textureFrame)
-    textureFrame:SetAllPoints(videoWindow.frame)
     textureFrame:Hide()
 
     videoWindow.videoTexture = videoTexture
@@ -139,8 +147,8 @@ end
 function Main:ShowVideo(video)
 
     -- Adjust window size based on video resolution
-    self.videoWindow:SetWidth(video.width)
-    self.videoWindow:SetHeight(video.height)
+    self.videoWindow:SetWidth(video.width / 2)
+    self.videoWindow:SetHeight(video.height / 2)
 
     -- Set the title and show the video window
     self.videoWindow:SetTitle(video.name)

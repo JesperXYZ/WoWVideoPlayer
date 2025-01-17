@@ -38,9 +38,9 @@ function Main:InitializeVideos()
             local framePath = pathPrefix .. frameIndex .. ".jpg"
 
             -- Stop when no more frames are found
-            if not FileExists(framePath) then
-                break
-            end
+            --if not FileExists(framePath) then
+                --break
+            --end
 
             -- Add the frame to the video
             table.insert(videoData.frames, framePath)

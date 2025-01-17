@@ -11,4 +11,12 @@ WoWVideoPlayer.videos = {
         totalFrameCount = 249, --
         autoPlayOnFlightPath = true, --
     },
+    {
+        name = "test_video_2",
+        width = 1080,
+        height = 1920,
+        fps = 20,
+        totalFrameCount = 478,
+        autoPlayOnFlightPath = true
+    }
 }

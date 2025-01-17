@@ -26,7 +26,9 @@ function Main:InitializeVideos()
             fps = videoConfig.fps or 5,
             totalFrameCount = videoConfig.totalFrameCount or 500,
             autoPlayOnFlightPath = videoConfig.autoPlayOnFlightPath or false,
-            frames = {}
+
+            frames = {},
+            audioPath = "Interface\\AddOns\\WoWVideoPlayer\\stored_videos\\" .. videoConfig.name .. "\\audio.mp3"
         }
 
         -- Load frames from the stored_videos folder
@@ -117,6 +119,9 @@ function Main:ShowVideo(video)
 
     -- Start playing the video
     self:PlayVideo(video)
+
+    -- Play audio
+    self:PlayAudio(video.audioPath)
 end
 
 function Main:PlayVideo(video)
@@ -158,9 +163,26 @@ function Main:StopVideo()
     self.videoPlaybackTimer = nil
     self.videoIsPlaying = false
 
+    self:StopAudio()
+
     if self.videoWindow and self.videoWindow:IsShown() then
         self.videoWindow:Hide()
         for _, tex in ipairs(self.videoWindow.textures) do tex:Hide() tex:SetTexture(nil) end
+    end
+end
+
+function Main:PlayAudio(audioPath)
+    -- Stop any currently playing sound
+    self:StopAudio()
+
+    -- Play the new audio
+    self.audioHandle = PlaySoundFile(audioPath, "Master")
+end
+
+function Main:StopAudio()
+    if self.audioHandle then
+        StopSound(self.audioHandle)
+        self.audioHandle = nil
     end
 end
 

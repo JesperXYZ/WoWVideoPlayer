@@ -1,0 +1,11 @@
+## Interface: 
+## Title: WoW Video Player
+## Author: Xanaxgod
+## IconTexture: Interface\Addons\XanaxgodPvpMods\media\icon
+## Notes: ingame video player i guess.
+## Version: v1.0
+
+libs\libs.xml
+
+videos.lua
+main.lua

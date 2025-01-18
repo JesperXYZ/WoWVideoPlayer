@@ -28,7 +28,7 @@ function Main:InitializeVideos()
             autoPlayOnFlightPath = videoConfig.autoPlayOnFlightPath or false,
 
             frames = {},
-            audioPath = "Interface\\AddOns\\WoWVideoPlayer\\stored_videos\\" .. videoConfig.name .. "\\audio.mp3"
+            audioPath = "Interface\\AddOns\\WoWVideoPlayer\\stored_videos\\" .. videoConfig.name .. "\\audio.mp3",
         }
 
         -- Load frames from the stored_videos folder
@@ -159,11 +159,11 @@ function Main:PlayVideo(video)
 end
 
 function Main:StopVideo()
+    self:StopAudio()
+
     if self.videoPlaybackTimer then self.videoPlaybackTimer:Cancel() end
     self.videoPlaybackTimer = nil
     self.videoIsPlaying = false
-
-    self:StopAudio()
 
     if self.videoWindow and self.videoWindow:IsShown() then
         self.videoWindow:Hide()
@@ -176,13 +176,13 @@ function Main:PlayAudio(audioPath)
     self:StopAudio()
 
     -- Play the new audio
-    self.audioHandle = PlaySoundFile(audioPath, "Master")
+    _, self.audioHandle = PlaySoundFile(audioPath, "Master")
 end
 
 function Main:StopAudio()
     if self.audioHandle then
-        StopSound(self.audioHandle)
-        self.audioHandle = nil
+        --MuteSoundFile(self.audioHandle)
+        StopSound(self.audioHandle) 
     end
 end
 
@@ -191,7 +191,7 @@ function Main:CheckPlayerOnFlightPath()
     if not InCombatLockdown() and UnitOnTaxi("player") and not self.videoIsPlaying then
         self:PlayFlightPathVideos()
     end
-    C_Timer.After(2, function() self:CheckPlayerOnFlightPath() end)
+    C_Timer.After(2.5, function() self:CheckPlayerOnFlightPath() end)
 end
 
 function Main:PlayFlightPathVideos()

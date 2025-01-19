@@ -89,6 +89,7 @@ function Main:CreateVideoWindow()
     local videoWindow = AceGUI:Create("Frame")
     videoWindow:SetTitle("Video Player")
     videoWindow:SetLayout("Fill")
+    --videoWindow:SetClampedToScreen(true) doesnt work is only usable on Frame not ScriptRegion
     videoWindow:SetWidth(1920)
     videoWindow:SetHeight(1080)
     videoWindow:Hide() -- Start hidden
@@ -114,6 +115,8 @@ function Main:ShowVideo(video)
     self.videoWindow:SetWidth(video.width / 2)
     self.videoWindow:SetHeight(video.height / 2)
     self.videoWindow:SetTitle(video.name)
+    self.videoWindow:ClearAllPoints()
+    self.videoWindow:SetPoint("CENTER")
     self.videoWindow:Show()
     self.videoWindow.textureFrame:Show()
 
@@ -135,7 +138,7 @@ function Main:PlayVideo(video)
 
     -- Reset and prepare textures
     for _, tex in ipairs(textures) do tex:Hide() tex:SetTexture(nil) end
-    for i = 1, 3 do -- Create 3 backup textures
+    for i = 1, 2 do -- Create 2 textures for buffering/backup
         textures[i] = textures[i] or textureFrame:CreateTexture(nil, "ARTWORK")
         textures[i]:SetAllPoints(textureFrame)
         textures[i]:Show()
@@ -161,14 +164,14 @@ end
 function Main:StopVideo()
     self:StopAudio()
 
-    if self.videoPlaybackTimer then self.videoPlaybackTimer:Cancel() end
-    self.videoPlaybackTimer = nil
-    self.videoIsPlaying = false
-
     if self.videoWindow and self.videoWindow:IsShown() then
         self.videoWindow:Hide()
         for _, tex in ipairs(self.videoWindow.textures) do tex:Hide() tex:SetTexture(nil) end
     end
+
+    if self.videoPlaybackTimer then self.videoPlaybackTimer:Cancel() end
+    self.videoPlaybackTimer = nil
+    self.videoIsPlaying = false
 end
 
 function Main:PlayAudio(audioPath)
